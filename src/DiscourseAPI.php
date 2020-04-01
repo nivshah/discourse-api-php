@@ -210,7 +210,12 @@ class DiscourseAPI {
 	 *
 	 * @return mixed HTTP return code and API return object
 	 **/
-	public function createCategory( string $categoryName, string $color, string $textColor = '000000', string $userName = 'system' ) {
+	public function createCategory(
+		string $categoryName,
+		string $color,
+		string $textColor = '000000',
+		string $userName = 'system'
+	) {
 		$params = [
 			'name'       => $categoryName,
 			'color'      => $color,
@@ -221,14 +226,14 @@ class DiscourseAPI {
 	}
 
 	/**
-	 * get info on a category - by name or ID
+	 * get info on a single category - by category ID or slug
 	 *
-	 * @param $categoryNameOrId
+	 * @param $categoryIdOrSlug
 	 *
 	 * @return \stdClass
 	 */
-	public function getCategory( $categoryNameOrId ): \stdClass {
-		return $this->_getRequest( "/c/{$categoryNameOrId}.json" );
+	public function getCategory( $categoryIdOrSlug ): \stdClass {
+		return $this->_getRequest( "/c/{$categoryIdOrSlug}.json" );
 	}
 
 	/** @noinspection MoreThanThreeArgumentsInspection * */
@@ -600,7 +605,13 @@ class DiscourseAPI {
 	 * @return mixed HTTP return code and API return object
 	 * @internal param string $categoryName category to create topic in
 	 **/
-	public function createTopic( string $topicTitle, string $bodyText, string $categoryId, string $userName, int $replyToId = 0 ) {
+	public function createTopic(
+		string $topicTitle,
+		string $bodyText,
+		string $categoryId,
+		string $userName,
+		int $replyToId = 0
+	) {
 		$params = [
 			'title'                => $topicTitle,
 			'raw'                  => $bodyText,
@@ -613,14 +624,14 @@ class DiscourseAPI {
 	}
 
 	/**
-	 * get info on a topic - by name or ID
+	 * get info on a topic - by topic ID or slug
 	 *
-	 * @param $topicNameOrId
+	 * @param $topicIdOrSlug
 	 *
 	 * @return \stdClass
 	 */
-	public function getTopic( $topicNameOrId ): \stdClass {
-		return $this->_getRequest( "/t/{$topicNameOrId}.json" );
+	public function getTopic( $topicIdOrSlug ): \stdClass {
+		return $this->_getRequest( "/t/{$topicIdOrSlug}.json" );
 	}
 
 	/**
@@ -675,13 +686,19 @@ class DiscourseAPI {
 	 * @return \stdClass
 	 *
 	 **/
-	private function _getRequest( string $reqString, array $paramArray = [], string $apiUser = 'system', $HTTPMETHOD = 'GET' ): \stdClass {
+	private function _getRequest(
+		string $reqString,
+		array $paramArray = [],
+		string $apiUser = 'system',
+		$HTTPMETHOD = 'GET'
+	): \stdClass {
 		$paramArray['api_key']      = $this->_apiKey;
 		$paramArray['api_username'] = $apiUser;
 		$paramArray['show_emails']  = 'true';
 
 		$ch  = curl_init();
-		$url = sprintf( '%s://%s%s?%s', $this->_protocol, $this->_discourseHostname, $reqString, http_build_query( $paramArray ) );
+		$url = sprintf( '%s://%s%s?%s', $this->_protocol, $this->_discourseHostname, $reqString,
+		                http_build_query( $paramArray ) );
 
 		curl_setopt( $ch, CURLOPT_URL, $url );
 		curl_setopt( $ch, CURLOPT_CUSTOMREQUEST, $HTTPMETHOD );
@@ -714,7 +731,12 @@ class DiscourseAPI {
 	 *
 	 * @return \stdClass
 	 **/
-	private function _putpostRequest( string $reqString, array $paramArray, string $apiUser = 'system', $HTTPMETHOD = 'POST' ): \stdClass {
+	private function _putpostRequest(
+		string $reqString,
+		array $paramArray,
+		string $apiUser = 'system',
+		$HTTPMETHOD = 'POST'
+	): \stdClass {
 
 		// set up headers for HTTP request we're about to make
 		$headers = [
@@ -739,7 +761,8 @@ class DiscourseAPI {
 
 		// fire up curl and send request
 		$ch  = curl_init();
-		$url = sprintf( '%s://%s%s', $this->_protocol, $this->_discourseHostname, $reqString ); //, $this->_apiKey, $apiUser );
+		$url = sprintf( '%s://%s%s', $this->_protocol, $this->_discourseHostname,
+		                $reqString ); //, $this->_apiKey, $apiUser );
 
 		curl_setopt( $ch, CURLOPT_URL, $url );
 		curl_setopt( $ch, CURLOPT_HTTPHEADER, $headers );
