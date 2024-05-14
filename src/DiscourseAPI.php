@@ -745,7 +745,7 @@ class DiscourseAPI {
 			'badge_id' => $badgeId
 		];
 
-		return $this->_postRequest( '/user-badges', [ $params ]);
+		return $this->_postRequest( '/user_badges', [ $params ]);
 	}
 
 	//////////////// Posts
