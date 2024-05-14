@@ -33,7 +33,19 @@
          */
         public function getGroups()
         {
-            return $this->_getRequest('/admin/groups.json');
+            return $this->_getRequest('/groups.json');
+        }
+        
+        /**
+         * getGroup
+         *
+         * @param string $group name of group
+         * @return mixed HTTP return code and API return object
+         */
+
+        public function getGroup($groupname)
+        {
+            return $this->_getRequest('/groups/' . $groupname . '.json');
         }
 
         /**
@@ -67,20 +79,12 @@
          */
         public function getGroupIdByGroupName($groupname)
         {
-            $obj = $this->getGroups();
+            $obj = $this->getGroup($groupname);
             if ($obj->http_code !== 200) {
                 return false;
             }
 
-            foreach ($obj->apiresult as $group) {
-                if ($group->name === $groupname) {
-                    $groupId = (int)$group->id;
-                    break;
-                }
-                $groupId = false;
-            }
-
-            return $groupId;
+            return $obj->apiresult->group->id;
         }
 
         /**
@@ -390,6 +394,18 @@
         }
 
         /**
+         * getUserByExternalID
+         *
+         * @param string $externalID     external id of sso user
+         *
+         * @return mixed HTTP return code and API return object
+         */
+        function getUserByExternalID($externalID)
+        {
+            return $this->_getRequest("/users/by-external/{$externalID}.json");
+        }
+
+        /**
          * @param        $email
          * @param        $topicId
          * @param string $userName
@@ -586,12 +602,14 @@
          **/
         private function _getRequest(string $reqString, array $paramArray = [], string $apiUser = 'system', $HTTPMETHOD = 'GET'): \stdClass
         {
-            $paramArray['api_key']      = $this->_apiKey;
-            $paramArray['api_username'] = $apiUser;
             $paramArray['show_emails']  = 'true';
             $ch                         = curl_init();
             $url                        = sprintf('%s://%s%s?%s', $this->_protocol, $this->_dcHostname, $reqString, http_build_query($paramArray));
             curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                "Api-Key: " . $this->_apiKey,
+                "Api-Username: " . $apiUser
+            ));
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $HTTPMETHOD);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
@@ -621,7 +639,7 @@
         private function _putpostRequest(string $reqString, array $paramArray, string $apiUser = 'system', $HTTPMETHOD = 'POST'): \stdClass
         {
             $ch  = curl_init();
-            $url = sprintf('%s://%s%s?api_key=%s&api_username=%s', $this->_protocol, $this->_dcHostname, $reqString, $this->_apiKey, $apiUser);
+            $url = sprintf('%s://%s%s', $this->_protocol, $this->_dcHostname, $reqString);
             curl_setopt($ch, CURLOPT_URL, $url);
             $query = '';
             if (isset($paramArray['group']) && is_array($paramArray['group'])) {
@@ -634,6 +652,10 @@
                 }
             }
             $query = trim($query, '&');
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                "Api-Key: " . $this->_apiKey,
+                "Api-Username: " . $apiUser
+            ));
             curl_setopt($ch, CURLOPT_POSTFIELDS, $query);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $HTTPMETHOD);
