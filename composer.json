@@ -1,7 +1,7 @@
 {
   "name"       : "nivshah/discourse-api-php",
   "description": "Discourse API library for PHP",
-  "version"    : "2.1.1",
+  "version"    : "2.0.1",
   "license"    : "GPL-2.0-or-later",
   "homepage"   : "https://github.com/nivshah/discourse-api-php",
   "keywords"   : [
