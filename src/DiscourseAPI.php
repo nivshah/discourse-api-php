@@ -733,19 +733,20 @@ class DiscourseAPI {
 	 * grantBadgeToUsername
 	 *
 	 * @param string $userName username of user
-	 * @param int $badgeId ID of badge
+	 * @param int    $badgeId ID of badge
+	 * @param string $apiUsername system username
 	 *
 	 * @return mixed HTTP return code and list of badges for given user
 	 * @throws Exception
 	 */
 
-	public function grantBadgeToUsername( string $userName, int $badgeId ) {
+	public function grantBadgeToUsername( string $userName, int $badgeId, string $apiUsername ) {
 		$params = [
-			'username'       => $userName,
+			'username' => $userName,
 			'badge_id' => $badgeId
 		];
 
-		return $this->_postRequest( '/user_badges', [ $params ]);
+		return $this->_postRequest( '/user_badges', [ $params ], $apiUsername);
 	}
 
 	//////////////// Posts
