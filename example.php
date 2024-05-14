@@ -1,6 +1,6 @@
 <?php
 
-use pnoeric\DiscourseAPI;
+use nivshah\DiscourseAPI;
 
 // ideally you have a composer auto-loader in place, but if not, you can just require the library:
 // require_once 'lib/DiscourseAPI.php';

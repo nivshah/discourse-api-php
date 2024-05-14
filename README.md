@@ -26,13 +26,14 @@ With contributions from:
 * https://github.com/vinkashq
 * https://github.com/kazad/discourse-api-php
 * https://github.com/timolaine/discourse-api-php
+* https://github.com/pnoeric/discourse-api-php
 
-Many methods added and major refactor by Eric Mueller March/April 2020, now lives at https://github.com/pnoeric/discourse-api-php.
+Now lives at https://github.com/nivshah/discourse-api-php
 
 # How to Use
 
 Just include it with Composer:
- `composer require pnoeric/discourse-api-php`
+ `composer require nivshah/discourse-api-php`
 
 And then:
 
@@ -41,7 +42,7 @@ And then:
 $key = 'my-secret-discourse-api-key';
 $hostname = 'forums.example.com';
 
-$api = new \pnoeric\DiscourseAPI($hostname, $key);
+$api = new \nivshah\DiscourseAPI($hostname, $key);
 
 // and you're off and running!
 // look through the src/DiscourseAPI.php file for methods

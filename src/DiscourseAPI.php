@@ -11,12 +11,13 @@
  * @author       timolaine https://github.com/timolaine
  * @author       vinkashq https://github.com/vinkashq
  * @author       pnoeric htps://github.com/pnoeric
+ * @author       nivshah htps://github.com/nivshah
  * @copyright    2013, DiscourseHosting.com
  * @license      http://www.gnu.org/licenses/gpl-2.0.html GPLv2
- * @link         https://github.com/pnoeric/discourse-api-php
+ * @link         https://github.com/nivshah/discourse-api-php
  **/
 
-namespace pnoeric;
+namespace nivshah;
 
 use CURLFile;
 use DateTime;
@@ -68,7 +69,6 @@ class DiscourseAPI {
 		$this->_apiKey            = $apiKey;
 		$this->_protocol          = $protocol;
 	}
-
 
 	////////////////  Groups
 
@@ -239,6 +239,8 @@ class DiscourseAPI {
 		return $this->_deleteRequest( '/admin/groups/' . (string) $groupId, [] );
 	}
 
+	//////////////// Categories
+
 	/** @noinspection MoreThanThreeArgumentsInspection * */
 	/**
 	 * createCategory
@@ -389,6 +391,8 @@ class DiscourseAPI {
 	public function getCategories() {
 		return $this->_getRequest( '/categories.json' );
 	}
+
+	////////////////  Users
 
 	/**
 	 * log out user - by username
@@ -648,7 +652,7 @@ class DiscourseAPI {
 	}
 
 	/**
-	 * get a discourse user reocrd from their external ID - by default returns "full" record (from /admin)
+	 * get a discourse user record from their external ID - by default returns "full" record (from /admin)
 	 *
 	 * note that NON-ADMIN record includes "ignored_users"
 	 * and the ADMIN version does NOT include "ignored_users" but does include the whole single_sign_on block (external_id)
@@ -725,7 +729,26 @@ class DiscourseAPI {
 		return $this->_getRequest( "/user-badges/{$userName}.json" );
 	}
 
-	///////////////  POSTS
+	/**
+	 * grantBadgeToUsername
+	 *
+	 * @param string $userName username of user
+	 * @param int $badgeId ID of badge
+	 *
+	 * @return mixed HTTP return code and list of badges for given user
+	 * @throws Exception
+	 */
+
+	public function grantBadgeToUsername( string $userName, int $badgeId ) {
+		$params = [
+			'username'       => $userName,
+			'badge_id' => $badgeId
+		];
+
+		return $this->_postRequest( '/user-badges', [ $params ]);
+	}
+
+	//////////////// Posts
 
 	/**
 	 * createPost

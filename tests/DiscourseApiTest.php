@@ -6,10 +6,11 @@
  * For now, they're a quick way to test some methods, and to dump output to the screen.
  *
  * @author Eric Mueller, https://github.com/pnoeric
+ * @author Niv Shah, https://github.com/nivshah
  */
 
 use PHPUnit\Framework\TestCase;
-use pnoeric\DiscourseAPI;
+use nivshah\DiscourseAPI;
 
 class DiscourseApiTest extends TestCase {
 	/**
@@ -40,7 +41,7 @@ class DiscourseApiTest extends TestCase {
 
 		// that's it! all the environment vars are loaded into $_ENV now, we don't need $dotEnv any longer.
 
-		$this->DiscourseAPI = new \pnoeric\DiscourseAPI( $_ENV['DISCOURSE_URL'], $_ENV['DISCOURSE_API_KEY'],
+		$this->DiscourseAPI = new \nivshah\DiscourseAPI( $_ENV['DISCOURSE_URL'], $_ENV['DISCOURSE_API_KEY'],
 		                                                 $_ENV['DISCOURSE_PROTOCOL'] );
 
 		$propertiesFromEnv = [
