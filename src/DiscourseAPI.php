@@ -666,6 +666,11 @@ class DiscourseAPI {
 	 */
 	public function getDiscourseUserFromExternalId( int $externalID, bool $getFullAdminRecord = true ) {
 		$res        = $this->_getRequest( "/users/by-external/{$externalID}.json" );
+
+		if ( !$res ) {
+			return false;
+		}
+
 		$userObject = $res->apiresult->user;
 
 		if ( $getFullAdminRecord && is_object( $res ) && $res->apiresult->user->id ) {
@@ -1160,7 +1165,6 @@ class DiscourseAPI {
 		$sso_payload = base64_encode( http_build_query( $sso_params ) );
 		$sig         = hash_hmac( 'sha256', $sso_payload, $this->sso_secret );
 
-		$url         = 'https://forum.example.com/admin/users/sync_sso';
 		$post_fields = [
 			'sso' => $sso_payload,
 			'sig' => $sig,
