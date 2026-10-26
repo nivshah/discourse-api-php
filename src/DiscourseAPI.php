@@ -839,7 +839,7 @@ class DiscourseAPI {
 		string $categoryId,
 		string $userName,
 		int $replyToId = 0,
-		DateTime $createDateTime = null
+		?DateTime $createDateTime = null
 	) {
 
 		if ( ! $categoryId ) {
