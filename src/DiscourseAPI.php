@@ -981,7 +981,6 @@ class DiscourseAPI {
 
 		$body           = curl_exec( $ch );
 		$httpResultCode = curl_getinfo( $ch, CURLINFO_HTTP_CODE );
-		curl_close( $ch );
 
 		// build return object
 		$res            = new stdClass();
