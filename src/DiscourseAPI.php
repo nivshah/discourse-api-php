@@ -661,25 +661,49 @@ class DiscourseAPI {
 	 *
 	 * @param bool $getFullAdminRecord
 	 *
-	 * @return mixed HTTP return code and API return object
-	 * @throws Exception
+	 * @return stdClass the user record
+	 * @throws Exception if there's no such user (code 404), or Discourse answers with anything
+	 *                   but the user, with its HTTP code as the code (0 if it couldn't be reached)
 	 */
 	public function getDiscourseUserFromExternalId( int $externalID, bool $getFullAdminRecord = true ) {
-		$res        = $this->_getRequest( "/users/by-external/{$externalID}.json" );
+		$res = $this->_getRequest( "/users/by-external/{$externalID}.json" );
 
-		if ( !$res ) {
-			return false;
+		if ( !is_object( $res->apiresult ) || !isset( $res->apiresult->user->id ) ) {
+			throw $this->_unexpectedResponse( "/users/by-external/{$externalID}.json", $res );
 		}
 
 		$userObject = $res->apiresult->user;
 
-		if ( $getFullAdminRecord && is_object( $res ) && $res->apiresult->user->id ) {
+		if ( $getFullAdminRecord ) {
 			// now call this to get the FULL record, with single_sign_on_record if there, but this drops ignored_users
-			$res        = $this->getUserByDiscourseId( $res->apiresult->user->id );
+			$res = $this->getUserByDiscourseId( $userObject->id );
+
+			if ( !is_object( $res->apiresult ) || !isset( $res->apiresult->id ) ) {
+				throw $this->_unexpectedResponse( "/admin/users/{$userObject->id}.json", $res );
+			}
+
 			$userObject = $res->apiresult;
 		}
 
 		return $userObject;
+	}
+
+	/**
+	 * an exception for a response that isn't what was asked for, e.g. a 403 or a 502,
+	 * with its HTTP code as the code and the start of the response in the message
+	 *
+	 * @param string   $requestString
+	 * @param stdClass $res
+	 *
+	 * @return Exception
+	 */
+	private function _unexpectedResponse( string $requestString, stdClass $res ): Exception {
+		$body = is_string( $res->apiresult ) ? $res->apiresult : json_encode( $res->apiresult );
+
+		return new Exception(
+			"Unexpected response to GET $requestString: " . $res->http_code . ' ' . substr( (string) $body, 0, 200 ),
+			(int) $res->http_code
+		);
 	}
 
 	/**
